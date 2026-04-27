@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+    <title>crust af — 2am pizza confessional</title>
+    <!-- Load the existing styles for the menu page -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* iMessage Specific Styles */
+        #imessage-ui {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+        }
+
+        .phone {
+            width: 390px;
+            height: 844px;
+            background: #000;
+            border-radius: 54px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, .6), 0 0 0 1px rgba(255, 255, 255, .08) inset, 0 0 0 10px #0b0b0b;
+        }
+
+        @media(max-width:440px) {
+            .phone {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                box-shadow: none
+            }
+        }
+
+        .phone::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+            opacity: .035;
+            mix-blend-mode: screen;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        .status {
+            height: 47px;
+            min-height: 47px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 26px 0 32px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -.2px;
+            background: #000;
+            position: relative;
+            z-index: 30;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .status-right svg {
+            display: block
+        }
+
+        .nav-bar {
+            height: 58px;
+            min-height: 58px;
+            display: grid;
+            grid-template-columns: 72px 1fr 72px;
+            align-items: center;
+            padding: 0 12px;
+            background: rgba(0, 0, 0, .85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: .5px solid rgba(255, 255, 255, .1);
+            position: relative;
+            z-index: 20;
+        }
+
+        .nav-left {
+            color: #0a84ff;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-weight: 400
+        }
+
+        .nav-left svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2.3;
+            fill: none
+        }
+
+        .nav-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9f0a 0%, #ff375f 100%);
+            display: grid;
+            place-items: center;
+            font-weight: 600;
+            font-size: 18px;
+            color: #fff;
+            position: absolute;
+            top: -27px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 0 1.5px #000;
+        }
+
+        .titles {
+            margin-top: 22px;
+            text-align: center
+        }
+
+        .title {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1;
+            letter-spacing: .1px
+        }
+
+        .subtitle {
+            font-size: 11px;
+            color: #8e8e93;
+            line-height: 1;
+            margin-top: 2px
+        }
+
+        .chat {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 14px 14px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            background: #000;
+            position: relative;
+            z-index: 1;
+            scroll-behavior: smooth;
+        }
+
+        .chat::-webkit-scrollbar {
+            display: none
+        }
+
+        .chat-row {
+            display: flex;
+            margin: 1px 0;
+            animation: in .32s cubic-bezier(.2, .8, .2, 1) both
+        }
+
+        @keyframes in {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .chat-row.left {
+            justify-content: flex-start
+        }
+
+        .chat-row.right {
+            justify-content: flex-end
+        }
+
+        .bubble-wrap {
+            display: flex;
+            flex-direction: column;
+            max-width: 76%
+        }
+
+        .chat-row.right .bubble-wrap {
+            align-items: flex-end
+        }
+
+        .bubble {
+            position: relative;
+            padding: 9px 13px;
+            font-size: 17px;
+            line-height: 1.32;
+            letter-spacing: -.24px;
+            word-wrap: break-word;
+        }
+
+        .bubble.left {
+            background: #1c1c1e;
+            color: #fff;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            margin-left: 6px;
+        }
+
+        .bubble.right {
+            background: #0a84ff;
+            color: #fff;
+            border-radius: 18px;
+            border-bottom-right-radius: 4px;
+            margin-right: 6px;
+        }
+
+        .bubble.left::before {
+            content: "";
+            position: absolute;
+            left: -6px;
+            bottom: 0;
+            width: 12px;
+            height: 12px;
+            background: #000;
+        }
+
+        .bubble.left::after {
+            content: "";
+            position: absolute;
+            left: -7px;
+            bottom: 0;
+            width: 9px;
+            height: 9px;
+            background: #1c1c1e;
+            border-bottom-right-radius: 8px;
+        }
+
+        .bubble.right::before {
+            content: "";
+            position: absolute;
+            right: -6px;
+            bottom: 0;
+            width: 12px;
+            height: 12px;
+            background: #000;
+        }
+
+        .bubble.right::after {
+            content: "";
+            position: absolute;
+            right: -7px;
+            bottom: 0;
+            width: 9px;
+            height: 9px;
+            background: #0a84ff;
+            border-bottom-left-radius: 8px;
+        }
+
+        .time {
+            font-size: 11px;
+            color: #7a7a80;
+            margin: 4px 8px 8px
+        }
+
+        .chat-row.right .time {
+            margin-right: 10px
+        }
+
+        .delivered {
+            font-size: 11px;
+            color: #8e8e93;
+            margin: 2px 10px 6px;
+            height: 14px;
+            transition: opacity .2s
+        }
+
+        .typing-bubble {
+            display: flex;
+            gap: 4px;
+            padding: 12px 14px;
+            align-items: center
+        }
+
+        .typing-bubble span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .7);
+            animation: bob 1.2s infinite
+        }
+
+        .typing-bubble span:nth-child(2) {
+            animation-delay: .15s
+        }
+
+        .typing-bubble span:nth-child(3) {
+            animation-delay: .3s
+        }
+
+        @keyframes bob {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: .55
+            }
+
+            30% {
+                transform: translateY(-4px);
+                opacity: 1
+            }
+        }
+
+        .bubble.image {
+            padding: 3px;
+            background: #1c1c1e;
+            overflow: hidden;
+            max-width: 260px
+        }
+
+        .bubble.image img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            max-width: 254px
+        }
+
+        .msg-sticker {
+            margin: 10px 0 8px 10px;
+            padding: 8px 12px;
+            border: 2px solid #ff3b30;
+            color: #ff3b30;
+            font-weight: 800;
+            font-size: 13.5px;
+            line-height: 1.05;
+            letter-spacing: .2px;
+            transform: rotate(-7deg);
+            background: rgba(0, 0, 0, .55);
+            backdrop-filter: blur(2px);
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(255, 59, 48, .12);
+            animation: pop .4s cubic-bezier(.2, 1.5, .4, 1) both;
+        }
+
+        .app-bubble {
+            padding: 6px;
+            background: #1c1c1e;
+            max-width: 300px;
+            cursor: pointer;
+            border-radius: 18px;
+        }
+
+        .app-bubble:hover {
+            background: #2c2c2e;
+        }
+
+        .app-card {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 4px
+        }
+
+        .app-thumb {
+            width: 54px;
+            height: 54px;
+            border-radius: 11px;
+            object-fit: cover;
+            background: #111;
+            flex-shrink: 0
+        }
+
+        .app-meta {
+            min-width: 0
+        }
+
+        .app-title {
+            font-size: 14.5px;
+            font-weight: 600;
+            letter-spacing: -.1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .app-sub {
+            font-size: 12px;
+            color: #98989f;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .composer {
+            height: 76px;
+            min-height: 76px;
+            padding: 8px 12px 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #000;
+            border-top: .5px solid rgba(255, 255, 255, .08);
+            position: relative;
+            z-index: 10;
+        }
+
+        .plus {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            color: #7c7c80;
+            font-size: 28px;
+            font-weight: 300
+        }
+
+        .fake-input {
+            flex: 1;
+            height: 36px;
+            background: #1c1c1e;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            color: #6f6f75;
+            font-size: 17px;
+            border: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .mic {
+            width: 24px;
+            height: 24px;
+            opacity: .65
+        }
+
+        .gate {
+            position: absolute;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, .92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            transition: opacity .28s;
+        }
+
+        .gate-inner {
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            transform: translateY(-8px)
+        }
+
+        .gate-title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -.3px;
+            margin-bottom: 22px
+        }
+
+        #nameInput {
+            width: 100%;
+            height: 46px;
+            background: #1c1c1e;
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 17px;
+            text-align: center;
+            outline: none;
+            padding: 0 14px;
+            margin-bottom: 16px;
+            font-family: inherit;
+        }
+
+        #nameInput::placeholder {
+            color: #6e6e73
+        }
+
+        #nameInput:focus {
+            border-color: #0a84ff;
+            box-shadow: 0 0 0 3px rgba(10, 132, 255, .22)
+        }
+
+        .gate-actions {
+            display: flex;
+            gap: 10px
+        }
+
+        .gate-actions button {
+            flex: 1;
+            height: 44px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: transform .08s;
+        }
+
+        .gate-actions button:active {
+            transform: scale(.97)
+        }
+
+        .ghost {
+            background: #2c2c2e;
+            color: #fff
+        }
+
+        .primary {
+            background: #0a84ff;
+            color: #fff
+        }
+
+        /* Hidden state for menu UI */
+        #menu-ui {
+            display: none;
+            width: 100vw;
+            height: 100dvh;
+            position: absolute;
+            inset: 0;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- iMessage Hero UI -->
+    <div id="imessage-ui">
+        <div class="phone">
+            <div class="gate" id="gate">
+                <div class="gate-inner">
+                    <div class="gate-title">what should we call you?</div>
+                    <input id="nameInput" placeholder="your name" maxlength="16" autocomplete="off" autocapitalize="off"
+                        spellcheck="false">
+                    <div class="gate-actions">
+                        <button class="ghost" id="skipBtn">skip</button>
+                        <button class="primary" id="enterBtn">enter</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status">
+                <div id="statusTime">9:41</div>
+                <div class="status-right">
+                    <svg width="18" height="12" viewBox="0 0 18 12">
+                        <path fill="white" d="M1 10h2V4H1v6Zm4 0h2V7H5v3Zm4 0h2V2H9v8Zm4 0h2V5h-2v5Z" />
+                    </svg>
+                    <svg width="16" height="12" viewBox="0 0 16 12">
+                        <path fill="white"
+                            d="M8 0C4.7 0 1.8 1.6.3 4.1c-.2.4 0 .9.4 1.1.4.2.9 0 1.1-.4C3 2.7 5.4 1.4 8 1.4s5 1.3 6.2 3.4c.2.4.7.6 1.1.4.4-.2.6-.7.4-1.1C14.2 1.6 11.3 0 8 0Zm0 3c-2 0-3.8 1-4.9 2.6-.2.4-.1.9.3 1.1.4.2.9.1 1.1-.3C5.3 5.2 6.6 4.4 8 4.4s2.7.8 3.5 2c.2.4.7.5 1.1.3.4-.2.5-.7.3-1.1C11.8 4 10 3 8 3Zm0 3c-1 0-1.9.5-2.4 1.3-.3.4-.2.9.2 1.1.4.3.9.2 1.1-.2.2-.3.6-.5 1.1-.5s.9.2 1.1.5c.2.4.7.5 1.1.2.4-.2.5-.7.2-1.1C9.9 6.5 9 6 8 6Z" />
+                    </svg>
+                    <svg width="27" height="12" viewBox="0 0 27 12">
+                        <rect x="0.5" y="2" width="23" height="8.5" rx="2.8" stroke="white" stroke-opacity=".35"
+                            fill="none" />
+                        <rect x="2" y="3.5" width="17.5" height="5.5" rx="1.3" fill="white" />
+                        <rect x="24.5" y="4.5" width="2" height="3.5" rx="1" fill="white" fill-opacity=".35" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="nav-bar">
+                <div class="nav-left">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M15.5 19l-7-7 7-7" />
+                    </svg>
+                    <span>2</span>
+                </div>
+                <div class="nav-center">
+                    <div class="avatar">c</div>
+                    <div class="titles">
+                        <div class="title">crust af</div>
+                        <div class="subtitle">iMessage</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat" id="chat"></div>
+
+            <div class="composer">
+                <div class="plus">+</div>
+                <div class="fake-input">iMessage</div>
+                <svg class="mic" viewBox="0 0 24 24" fill="none" stroke="#7d7d81" stroke-width="1.8"
+                    stroke-linecap="round">
+                    <path d="M12 18.5v3M8 21.5h8M12 15a3 3 0 0 0 3-3V7a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu App UI -->
+    <div id="menu-ui">
+        <div class="app" id="app">
+            <section id="hero">
+                <div class="marquee-container">
+                    <div class="marquee-content">
+                        SOLD OUT SOON • DON'T THINK JUST ORDER • KITCHEN CLOSES AT 4AM • BAD DECISIONS TASTE BETTER •
+                        SOLD OUT SOON • DON'T THINK JUST ORDER • KITCHEN CLOSES AT 4AM • BAD DECISIONS TASTE BETTER •
+                    </div>
+                </div>
+                <div class="hero-bg">
+                    <img src="assets/images/pizza-cheesy-chaos.jpg" alt="cheese pull">
+                    <div class="hero-gradient"></div>
+                    <div class="grain"></div>
+                </div>
+                <div class="hero-content">
+                    <div class="logo">CRUSTY AF</div>
+                    <div class="headline">
+                        <div>fuck healthy.</div>
+                        <div>fuck presentation.</div>
+                        <div>just eat.</div>
+                    </div>
+                    <div class="sub">2am pizza for thane. no menu, just confessions.</div>
+                    <button class="cta" id="cta">confess why you're here</button>
+                    <div class="live"><span class="dot"></span><span>● <span id="live-count">47</span> people confessing
+                            right now</span></div>
+
+                    <div class="sticker" id="sticker1">NO<br>REFUNDS</div>
+                    <div class="sticker" id="sticker2">OPEN<br>LATE</div>
+                </div>
+                <div class="scroll" id="scrollHint">↓</div>
+                <div class="fomo-ticker" id="fomoTicker"></div>
+            </section>
+
+            <section id="confessional" aria-hidden="true">
+                <div class="conf-header">
+                    <button class="back" id="backBtn" aria-label="Back">←</button>
+                    <div class="conf-logo">CRUSTY AF</div>
+                    <div class="conf-meta">
+                        <div id="clock">2:37 AM</div>
+                        <button class="cart-btn" id="cartBtn">🍕 <span id="cart-count">0</span></button>
+                    </div>
+                </div>
+                <div class="conf-body">
+                    <div class="conf-inner">
+                        <!-- STEP 1 -->
+                        <div class="step" id="step1">
+                            <div class="step-label">STEP 1 — CONFESS</div>
+                            <h2 class="step-title">why the fuck are you up?</h2>
+                            <p class="step-sub">No judgment. We cook based on your damage, not a menu.</p>
+                            <div class="confession-grid" id="confessGrid">
+                                <button class="confess-btn" data-confess="high">high af 😶‍🌫️<span>munchies level:
+                                        critical</span></button>
+                                <button class="confess-btn" data-confess="heartbroken">broke up / heartbroken
+                                    🥀<span>needs cheese therapy</span></button>
+                                <button class="confess-btn" data-confess="drunk">drunk munchies 🥴<span>spicy + greasy =
+                                        perfect</span></button>
+                                <button class="confess-btn" data-confess="work">fucked up day at work ☠️<span>revenge
+                                        eating</span></button>
+                                <button class="confess-btn" data-confess="sleep">can't sleep 👁️<span>3am
+                                        doomscroll</span></button>
+                                <button class="confess-btn" data-confess="gym">starving after gym 🥩<span>protein? nah,
+                                        pizza</span></button>
+                                <button class="confess-btn" data-confess="studying">studying till 2am ☕<span>brain
+                                        fuel</span></button>
+                                <button class="confess-btn" data-confess="bored">just bored 🫠<span>thane is dead
+                                        rn</span></button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2 -->
+                        <div class="step" id="step2" style="display:none; opacity:0; transform:translateY(20px);">
+                            <div class="step-label">STEP 2 — WE HEARD YOU</div>
+                            <div class="pizzas-head">
+                                <h2 class="step-title" id="step2title"
+                                    style="margin:0; font-size:clamp(28px,5vw,40px);">for your situation:</h2>
+                                <button class="back-to-confess" id="backToConfess">← change confession</button>
+                            </div>
+                            <p class="step-sub" id="step2sub">Handpicked. No healthy shit.</p>
+                            <div class="pizza-grid" id="pizzaGrid"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="toast" id="toast">added to cart — we don't judge</div>
+
+        <div class="cart-overlay" id="cartOverlay"></div>
+        <div class="cart-drawer" id="cartDrawer">
+            <div class="cart-drawer-handle"></div>
+            <h3>YOUR SINS</h3>
+            <div class="cart-drawer-items" id="cartItemsList"></div>
+            <div class="cart-drawer-footer">
+                <div class="cart-total">DAMAGE: <span id="cartTotalAmt">₹0</span></div>
+                <button class="pay-btn" onclick="alert('Checkout integration pending')">PAY FOR YOUR SINS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // ---------- IMESSAGE SCRIPT ----------
+        const chat = document.getElementById('chat');
+        const gate = document.getElementById('gate');
+        const nameInput = document.getElementById('nameInput');
+        let started = false;
+        let chatUserName = 'you';
+
+        function updateTimeIMsg() {
+            const d = new Date();
+            document.getElementById('statusTime').textContent = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        }
+        updateTimeIMsg(); setInterval(updateTimeIMsg, 30000);
+
+        const scroll = () => { chat.scrollTop = chat.scrollHeight };
+
+        function addMessage(side, text, time) {
+            const wrap = document.createElement('div');
+            wrap.className = `chat-row ${side}`;
+            wrap.innerHTML = `<div class="bubble-wrap"><div class="bubble ${side}"></div></div>`;
+            wrap.querySelector('.bubble').textContent = text;
+            if (time) {
+                const t = document.createElement('div');
+                t.className = 'time';
+                t.textContent = time;
+                wrap.querySelector('.bubble-wrap').appendChild(t);
+            }
+            chat.appendChild(wrap); scroll();
+            return wrap;
+        }
+
+        function addMessageWithStatus(side, text, time) {
+            const row = addMessage(side, text, time);
+            const s = document.createElement('div');
+            s.className = 'delivered';
+            row.querySelector('.bubble-wrap').appendChild(s);
+            return { row, status: s };
+        }
+
+        function showTyping(side) {
+            hideTyping();
+            const el = document.createElement('div');
+            el.className = `chat-row ${side}`; el.id = 'typing';
+            el.innerHTML = `<div class="bubble-wrap"><div class="bubble ${side} typing-bubble"><span></span><span></span></div></div>`;
+            chat.appendChild(el); scroll();
+        }
+        function hideTyping() { document.getElementById('typing')?.remove(); }
+
+        function addImage(side, src) {
+            const row = document.createElement('div');
+            row.className = `chat-row ${side}`;
+            row.innerHTML = `<div class="bubble-wrap"><div class="bubble ${side} image"><img alt="pizza" src="${src}"></div></div>`;
+            chat.appendChild(row); scroll();
+        }
+
+        function addSticker() {
+            const row = document.createElement('div');
+            row.className = 'chat-row left';
+            row.innerHTML = `<div class="msg-sticker">YOU'RE NOT<br>SHARING<br>THIS.</div>`;
+            chat.appendChild(row); scroll();
+        }
+
+        function transitionToMenu() {
+            // Hide iMessage UI, show Menu UI
+            document.getElementById('imessage-ui').style.display = 'none';
+            document.getElementById('menu-ui').style.display = 'block';
+
+            // Update personalization
+            const heroSub = document.querySelector('#hero .sub');
+            if (heroSub) heroSub.textContent = `hey ${chatUserName}. confess your sins.`;
+        }
+
+        function addAppCard() {
+            const row = document.createElement('div');
+            row.className = 'chat-row left';
+            row.innerHTML = `
+    <div class="bubble-wrap" style="position:relative; z-index:50;">
+      <div class="app-bubble" style="transition:transform 0.1s;" onmouseover="this.style.transform='scale(0.98)'" onmouseout="this.style.transform='scale(1)'">
+        <div class="app-card">
+          <img class="app-thumb" src="assets/images/pepperoni-pizza.jpg" alt="">
+          <div class="app-meta">
+            <div class="app-title">CRUST AF — Order now</div>
+            <div class="app-sub">4,247 orders tonight • Mumbai only</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+            const bubbleApp = row.querySelector('.app-bubble');
+            bubbleApp.addEventListener('click', transitionToMenu);
+
+            chat.appendChild(row); scroll();
+        }
+
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        async function runSequence() {
+            await sleep(650);
+            addMessage('left', `bro ${chatUserName} im starving`, '2:14 AM');
+            await sleep(1450);
+            addMessage('right', "same. everything's closed", '2:15 AM');
+            await sleep(1150);
+            addMessage('left', 'wait crust af is open till 4', '2:16 AM');
+            await sleep(400);
+            showTyping('left');
+            await sleep(2000);
+            hideTyping();
+            await sleep(150);
+            addMessage('right', 'no way', '2:16 AM');
+            await sleep(800);
+            addImage('left', 'assets/images/bbq-pizza.jpg');
+            await sleep(600);
+            addSticker();
+            await sleep(900);
+            showTyping('right');
+            await sleep(1500);
+            hideTyping();
+            await sleep(200);
+            const m = addMessageWithStatus('right', 'link?', '2:17 AM');
+            await sleep(500);
+            m.status.textContent = 'Delivered';
+            await sleep(800);
+            m.status.textContent = 'Read 2:17 AM';
+            await sleep(700);
+            addAppCard();
+        }
+
+        function start() {
+            if (started) return;
+            started = true;
+            chatUserName = (nameInput.value.trim() || 'bro').toLowerCase().replace(/[^a-z0-9 ]/gi, '').slice(0, 12);
+            if (!chatUserName) chatUserName = 'bro';
+
+            gate.style.opacity = '0';
+            setTimeout(() => gate.remove(), 280);
+            runSequence();
+        }
+
+        document.getElementById('enterBtn').onclick = start;
+        document.getElementById('skipBtn').onclick = start;
+        nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); start(); } });
+        setTimeout(() => nameInput.focus(), 80);
+    </script>
+
+    <!-- Load the external menu script -->
+    <script src="script.js"></script>
+</body>
+
+</html>

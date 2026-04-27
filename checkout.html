@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Checkout — Crusty AF">
+  <title>CHECKOUT — CRUSTY AF</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav scrolled">
+    <a href="index.html" class="nav-logo">CRUSTY <span>AF</span></a>
+    <div class="nav-links">
+      <a href="menu.html">← BACK TO MENU</a>
+    </div>
+  </nav>
+
+  <!-- CHECKOUT -->
+  <div class="checkout-page">
+    <h1>CHECKOUT</h1>
+
+    <!-- ORDER SUMMARY -->
+    <div class="order-summary">
+      <h3>ORDER SUMMARY</h3>
+      <div id="summaryItems"></div>
+      <div class="summary-total" id="summaryTotal"></div>
+    </div>
+
+    <!-- FORM -->
+    <form id="checkoutForm" onsubmit="placeOrder(event)">
+      <div class="form-group">
+        <label>NAME</label>
+        <input type="text" id="custName" placeholder="Your name" required>
+      </div>
+      <div class="form-group">
+        <label>PHONE</label>
+        <input type="tel" id="custPhone" placeholder="Phone number" required>
+      </div>
+      <div class="form-group">
+        <label>DELIVERY ADDRESS</label>
+        <textarea id="custAddress" placeholder="Full address" required></textarea>
+      </div>
+
+      <label style="font-size:.8rem;color:var(--text2);margin-bottom:8px;display:block;letter-spacing:.04em">PAYMENT</label>
+      <div class="payment-toggle">
+        <div class="pay-option active" onclick="selectPay(this, 'cod')">💵 Cash on Delivery</div>
+        <div class="pay-option" onclick="selectPay(this, 'online')">💳 Pay Online</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px" id="placeBtn">
+        PLACE ORDER — <span id="orderTotal">₹0</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- SUCCESS OVERLAY -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-emoji">🍕</div>
+    <h1>ORDER CONFIRMED!</h1>
+    <p>Your food is being prepared</p>
+    <p>ETA: ~20 minutes</p>
+    <div class="order-id" id="orderId"></div>
+    <a href="menu.html" class="btn btn-ghost">BACK TO MENU</a>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    function renderSummary() {
+      const cart = getCart();
+      const items = document.getElementById('summaryItems');
+      const total = document.getElementById('summaryTotal');
+      const orderTotal = document.getElementById('orderTotal');
+
+      if (cart.length === 0) {
+        items.innerHTML = '<p style="color:var(--text3);font-size:.9rem">No items — <a href="menu.html" style="color:var(--red)">add something</a></p>';
+        total.innerHTML = '';
+        return;
+      }
+
+      items.innerHTML = cart.map(i => `
+        <div class="summary-item">
+          <span>${i.name} × ${i.qty}</span>
+          <span>₹${i.price * i.qty}</span>
+        </div>
+      `).join('');
+
+      const t = getTotal();
+      total.innerHTML = `<span>Total</span><span>₹${t}</span>`;
+      if (orderTotal) orderTotal.textContent = '₹' + t;
+    }
+
+    function selectPay(el, method) {
+      document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function placeOrder(e) {
+      e.preventDefault();
+      if (getCart().length === 0) { alert('Add some items first!'); return; }
+
+      const btn = document.getElementById('placeBtn');
+      btn.textContent = 'PLACING ORDER...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        const orderId = 'CRUST-' + Math.random().toString(36).substring(2,8).toUpperCase();
+        document.getElementById('orderId').textContent = 'Order ' + orderId;
+        document.getElementById('successOverlay').classList.add('show');
+        localStorage.removeItem('crustyCart');
+      }, 1500);
+    }
+
+    document.addEventListener('DOMContentLoaded', renderSummary);
+  </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>CRUSTY AF — 2am pizza confessional</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app" id="app">
+  <!-- HERO -->
+  <section id="hero">
+    <div class="marquee-container">
+      <div class="marquee-content">
+        SOLD OUT SOON • DON'T THINK JUST ORDER • KITCHEN CLOSES AT 4AM • BAD DECISIONS TASTE BETTER • SOLD OUT SOON • DON'T THINK JUST ORDER • KITCHEN CLOSES AT 4AM • BAD DECISIONS TASTE BETTER •
+      </div>
+    </div>
+    <div class="hero-bg">
+      <!-- Dark moody background pizza shot -->
+      <img src="assets/images/pizza-cheesy-chaos.jpg" alt="cheese pull">
+      <div class="hero-gradient"></div>
+      <div class="grain"></div>
+    </div>
+    <div class="hero-content">
+      <div class="logo">CRUSTY AF</div>
+      <div class="headline">
+        <div>fuck healthy.</div>
+        <div>fuck presentation.</div>
+        <div>just eat.</div>
+      </div>
+      <div class="sub">2am pizza for thane. no menu, just confessions.</div>
+      <button class="cta" id="cta">confess why you're here</button>
+      <div class="live"><span class="dot"></span><span>● <span id="live-count">47</span> people confessing right now</span></div>
+      
+      <!-- Stickers -->
+      <div class="sticker" id="sticker1">NO<br>REFUNDS</div>
+      <div class="sticker" id="sticker2">OPEN<br>LATE</div>
+    </div>
+    <div class="scroll" id="scrollHint">↓</div>
+    <div class="fomo-ticker" id="fomoTicker"></div>
+  </section>
+
+  <!-- CONFESSIONAL -->
+  <section id="confessional" aria-hidden="true">
+    <div class="conf-header">
+      <button class="back" id="backBtn" aria-label="Back">←</button>
+      <div class="conf-logo">CRUSTY AF</div>
+      <div class="conf-meta">
+        <div id="clock">2:37 AM</div>
+        <button class="cart-btn" id="cartBtn">🍕 <span id="cart-count">0</span></button>
+      </div>
+    </div>
+    <div class="conf-body">
+      <div class="conf-inner">
+        <!-- STEP 1 -->
+        <div class="step" id="step1">
+          <div class="step-label">STEP 1 — CONFESS</div>
+          <h2 class="step-title">why the fuck are you up?</h2>
+          <p class="step-sub">No judgment. We cook based on your damage, not a menu.</p>
+          <div class="confession-grid" id="confessGrid">
+            <button class="confess-btn" data-confess="high">high af 🌿<span>munchies level: critical</span></button>
+            <button class="confess-btn" data-confess="heartbroken">broke up / heartbroken 💔<span>needs cheese therapy</span></button>
+            <button class="confess-btn" data-confess="drunk">drunk munchies 🍺<span>spicy + greasy = perfect</span></button>
+            <button class="confess-btn" data-confess="work">fucked up day at work 💻<span>revenge eating</span></button>
+            <button class="confess-btn" data-confess="sleep">can't sleep 😵💫<span>3am doomscroll</span></button>
+            <button class="confess-btn" data-confess="gym">starving after gym 🏋️<span>protein? nah, pizza</span></button>
+            <button class="confess-btn" data-confess="studying">studying till 2am 📚<span>brain fuel</span></button>
+            <button class="confess-btn" data-confess="bored">just bored 🥱<span>thane is dead rn</span></button>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step" id="step2" style="display:none; opacity:0; transform:translateY(20px);">
+          <div class="step-label">STEP 2 — WE HEARD YOU</div>
+          <div class="pizzas-head">
+            <h2 class="step-title" id="step2title" style="margin:0; font-size:clamp(28px,5vw,40px);">for your situation:</h2>
+            <button class="back-to-confess" id="backToConfess">← change confession</button>
+          </div>
+          <p class="step-sub" id="step2sub">Handpicked. No healthy shit.</p>
+          <div class="pizza-grid" id="pizzaGrid"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">added to cart — we don't judge</div>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-handle"></div>
+  <h3>YOUR SINS</h3>
+  <div class="cart-drawer-items" id="cartItemsList"></div>
+  <div class="cart-drawer-footer">
+    <div class="cart-total">DAMAGE: <span id="cartTotalAmt">₹0</span></div>
+    <button class="pay-btn" onclick="alert('Checkout integration pending')">PAY FOR YOUR SINS</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
