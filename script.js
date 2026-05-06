@@ -106,7 +106,7 @@ const pizzas = {
   wings: { id:'wings', name:'WINGS OF FURY', desc:'so hot you will cry. buffalo glazed madness.', price:299, img:'hot-wings.png', tag:'pain', type:'side' },
   gbread: { id:'gbread', name:'ROASTED GARLIC LOAF', desc:'a massive brick of carbs. sleep heavily tonight.', price:279, img:'garlic-knots.png', tag:'coma', type:'side', filter:'brightness(0.7) contrast(1.3)' },
   dessert: { id:'dessert', name:'CINNAMON KNOTS', desc:'sugar crash guaranteed. dipped in vanilla icing.', price:199, img:'garlic-knots.png', tag:'sugar', type:'side', filter:'sepia(0.6) hue-rotate(-20deg) brightness(1.1)' },
-  nutella: { id:'nutella', name:'NUTELLA PIZZA', desc:'a 10" pizza but dessert. don't tell your dentist.', price:399, img:'nutella-pizza.jpg', tag:'sweet end', type:'side' },
+  nutella: { id:'nutella', name:'NUTELLA PIZZA', desc:'a 10" pizza but dessert. do not tell your dentist.', price:399, img:'nutella-pizza.jpg', tag:'sweet end', type:'side' },
 
   // --- DRINKS ---
   cola: { id:'cola', name:'ICE COLD COLA', desc:'pure liquid sugar. you need the caffeine.', price:99, img:'cola.png', tag:'hydration', type:'drink' },
